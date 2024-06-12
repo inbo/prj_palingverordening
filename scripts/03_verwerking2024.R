@@ -160,6 +160,14 @@ modlgcoefs <-
                   c(coef(modlg_2015)[2], coef(modlg_2018)[2], 
                    coef(modlg_2021)[2], coef(modlg_2024)[2])))
 
+summary(modlg_2024)#10^-2.95183x^3.13245= 0.001117301x^3.13245 R2=0.957
+
+ggplot((df_lg[df_lg$jaar=="2024",]), aes(x = lengte_cm, y = gewicht_g)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = y ~ poly(x, 3), col = "blue") +
+  ggtitle("Scatter plot with Polynomial Regression Line") +
+  theme_minimal()
+
 lgstats <- df_lg %>% 
   group_by(jaar) %>% 
   do(lg_summary_stats(.)) %>% 
@@ -198,6 +206,10 @@ ggplot(df_lg, aes(x = jaar, y = lengte_cm)) +
   geom_boxplot(width = 0.2) +
   facet_wrap(~ bekken  )
 
+ggplot(data = df_lg[df_lg$jaar == "2024",], aes(x = lengte_cm)) +
+  geom_histogram() + facet_wrap(~bekken, scales = "free_y") +
+  labs(x = "Lengte (cm)", y = "aantal palingen")
+ggsave(file = paste0("Output/lg_bek_2024.png"), width = fw, height = fh, dpi = dpi)
 
 
 # Aantal vrouwtjes
