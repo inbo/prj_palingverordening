@@ -103,6 +103,17 @@ df_cpue %>%
 ggsave("Output/opnames_riviertype.png", width = fw, height = fh, dpi = dpi)
 
 df_cpue %>%
+  group_by(jaar, riviertype) %>%
+  summarize(aantal = n()) %>%
+  left_join(df_area_bek_typ[df_area_bek_typ$jaar==2024,] %>% group_by(riviertype) %>% summarize(area_ha = sum(area_ha))) %>%
+  mutate(n_cpue_ha = aantal / area_ha) %>%
+  ggplot(aes(x = riviertype, y = n_cpue_ha, fill = jaar)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(x = "", y = "aantal visbestandsopnames per hectare", fill = "") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 0.5))
+ggsave("Output/opnames_ha_riviertype.png", width = fw, height = fh, dpi = dpi)
+
+df_cpue %>%
   group_by(jaar, bekken) %>%
   summarize(aantal = n()) %>%
   ggplot(aes(x = bekken, y = aantal, fill = jaar)) +
@@ -110,6 +121,18 @@ df_cpue %>%
   labs(x = "", y = "aantal visbestandsopnames", fill = "") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 0.5))
 ggsave("Output/opnames_bekken.png", width = fw, height = fh, dpi = dpi)
+
+df_cpue %>%
+  group_by(jaar, bekken) %>%
+  summarize(aantal = n()) %>%
+  left_join(df_area_bek_typ[df_area_bek_typ$jaar==2024,] %>% group_by(bekken) %>% summarize(area_ha = sum(area_ha))) %>%
+  mutate(n_cpue_ha = aantal / area_ha) %>%
+  ggplot(aes(x = bekken, y = n_cpue_ha, fill = jaar)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(x = "", y = "aantal visbestandsopnames per hectare", fill = "") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 0.5))
+ggsave("Output/opnames_ha_bekken.png", width = fw, height = fh, dpi = dpi)
+
 
 df_cpue %>%
   group_by(jaar, hoofdbekken) %>%
